@@ -4,7 +4,7 @@ from os import system
 import Layout 
 #------------------------------Config------------------------------#
 
-width, height = gui.Window.get_screen_size()
+# TODO: Start with the server thing...
 
 #------------------------Window magnagement------------------------#
 

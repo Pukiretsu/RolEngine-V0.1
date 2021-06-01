@@ -7,7 +7,7 @@ please refer to PySimpleGUI for futher information
 about layouts
 
 """
-
+# TODO : Start prototyping the UX
 mainLayout  =   [   
                     [
                         Text("Hora de ponernos en pantalla completa :)",key='/textoPrueba/'),
