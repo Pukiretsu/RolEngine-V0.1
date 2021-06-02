@@ -1,4 +1,5 @@
 #--------------------------Library Import--------------------------#
+from tkinter.constants import FALSE
 import PySimpleGUI as gui
 from os import system
 import Layout 
@@ -13,7 +14,7 @@ window = gui.Window    (
                             layout = Layout.mainLayout,
                             auto_size_buttons = True, 
                             resizable = True,
-                            no_titlebar=True,
+                            no_titlebar=False,
                             grab_anywhere=True
                         )
 
