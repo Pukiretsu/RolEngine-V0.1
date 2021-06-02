@@ -1,4 +1,6 @@
-from PySimpleGUI import Text,Button
+import fractions
+from PySimpleGUI import Text,Button,Window
+from fractions import Fraction
 """
 Definition
 ------------------
@@ -7,10 +9,12 @@ please refer to PySimpleGUI for futher information
 about layouts
 
 """
+
+
 # TODO : Start prototyping the UX
 mainLayout  =   [   
                     [
-                        Text("Hora de ponernos en pantalla completa :)",key='/textoPrueba/'),
+                        Text("Hora de ponernos en pantalla completa :)\n",key='/textoPrueba/'),
                         Button(key="/Fullscreen/", button_text="Pantalla completa")
                     ],
                     [Button(key="/exit/",button_text="Salir")]
