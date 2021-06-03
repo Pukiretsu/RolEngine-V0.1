@@ -1,6 +1,3 @@
-import fractions
-from PySimpleGUI import Text,Button,Window
-from fractions import Fraction
 """
 Definition
 ------------------
@@ -9,13 +6,20 @@ please refer to PySimpleGUI for futher information
 about layouts
 
 """
+#----------------------------TO DO list--------------------------#
+'''
+TODO : Start prototyping the UX
+'''
+#--------------------------Library Import--------------------------#
+import PySimpleGUI as gui
 
-
-# TODO : Start prototyping the UX
 mainLayout  =   [   
+                    #[gui.Titlebar(title="Rol Engine launcher",key='/Tittle/')],
+                    
                     [
-                        Text("Hora de ponernos en pantalla completa :)\n",key='/textoPrueba/'),
-                        Button(key="/Fullscreen/", button_text="Pantalla completa")
+                        gui.Text("Hora de ponernos en pantalla completa :)\n",key='/textoPrueba/'),
+                        gui.Button(key="/Fullscreen/", button_text="Pantalla completa")
                     ],
-                    [Button(key="/exit/",button_text="Salir")]
+                    [gui.Button(key="/exit/",button_text="Salir")]
                 ]
+
