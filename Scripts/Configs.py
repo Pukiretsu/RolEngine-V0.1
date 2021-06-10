@@ -1,7 +1,8 @@
 #--------------------------Library Import--------------------------#
 import json
-
+from PySimpleGUI import Window
 #--------------------------Functions list--------------------------#
+width, height = Window.get_screen_size()
 
 def DetectConfigs():
     """ 
@@ -29,7 +30,8 @@ def Defaults():
     Sets the defaults of the configuration file.
     """
     config = {
-                'fullscreen' : True # TODO: Make a better implementation of this 
+                'WindowedRes' : (int(width*0.5), int(height*0.5)),
+                'ObjFactor' : 50,
              }
     
     data = open(".\data\configs.json","w")
