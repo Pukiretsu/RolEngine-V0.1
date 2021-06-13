@@ -3,7 +3,10 @@ import json
 from PySimpleGUI import Window
 #--------------------------Functions list--------------------------#
 width, height = Window.get_screen_size()
-
+defaults = {
+    'WindowedRes' : (round(width*0.75), round(height*0.75)),
+    }
+    
 def DetectConfigs():
     """ 
     Definition:
@@ -29,10 +32,7 @@ def Defaults():
     ------------
     Sets the defaults of the configuration file.
     """
-    config = {
-                'WindowedRes' : (int(width*0.5), int(height*0.5)),
-                'ObjFactor' : 50,
-             }
+    config = defaults
     
     data = open(".\data\configs.json","w")
     data.write(json.dumps(config))
@@ -50,7 +50,12 @@ def GetConfigs():
     """
     data = open(".\data\configs.json","r")
     config = json.loads(data.read())
+    # Some Bug preventing code
     data.close()
+    if config['WindowedRes'] != [round(width*0.75), round(height*0.75)]:
+        config['WindowedRes'] = [round(width*0.75), round(height*0.75)]
+        print("Resolucion nueva detectada")
+        SaveConfigs(config)
     return config
 
 def SaveConfigs(config):
