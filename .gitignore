@@ -118,3 +118,5 @@ dmypy.json
 
 # Local App Config Data
 .Data/configs.json
+Data/configs.json
+*.png
