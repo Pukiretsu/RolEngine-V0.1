@@ -19,17 +19,30 @@ import Configs as conf
 import Layouts
 #-----------------------------Variable-----------------------------#
 # Configuration file
-
 if conf.DetectConfigs():
     configs = conf.GetConfigs()
 else:
     conf.Defaults()
     configs = conf.GetConfigs()
-
+    
 characterCreation = Layouts.characterCreation
 
-#------------------------Window magnagement------------------------#
+ccInputsKeys = ["/CLIENT_CHARACTER_NAME/", "/CLIENT_CHARACTER_AGE/", "/CLIENT_CHARACTER_HEIGHT/", "/CLIENT_CHARACTER_RACE/", "/CLIENT_CHARACTER_GENDER/"]
+ccDefValues = ["Nombre", "Años", "Metros", "Seleccione",]
 
+class Player:
+    def __init__(self,basicInfo: tuple) -> None:
+        self.name:      basicInfo[0]
+        self.age:       basicInfo[1]
+        self.height:    basicInfo[2]
+        self.race:      basicInfo[3]
+        self.gender:    basicInfo[4]
+    
+    def parse_info(self):
+        pass
+
+
+#------------------------Window magnagement------------------------#
 window = gui.Window    (
                             title = "Rol Engine Alpha V0.1",
                             layout = characterCreation,
@@ -39,27 +52,12 @@ window = gui.Window    (
                             finalize = True,
                             margins = (0,10)
                         )
-#window.bind('<Configure>',"/RESIZED/") #Binding a TKinter event to window
-
 #------------------------Events magnagement------------------------#
-""" n = 50
-num = []
-for number in range(1,n+1):
-    num.append(number)
-event, values = window.read(timeout=100)
-for size in num:
-    ActualFont = Layouts.fonts["Font"] + str(size)
-    window["/CLIENT_CHARCRTITTLE/"].update(font=ActualFont) 
-    window.refresh()
-    print(ActualFont, ": " ,window["/CLIENT_CHARCRTITTLE/"].get_size(), "\n")
-    event, values = window.read(timeout=100) """
+
 window.refresh()
-#print("Placeholder: " ,window["PH"].get_size())
-#print("Upload: " ,window["/CLIENT_AVATARUPLOAD/"].get_size())
-#print("Name: " ,window["/CLIENT_CHARACTER_NAME/"].get_size())
-print("Volver: "    , window["/BACKMAIN/"].get_size())
-print("Siguiente: " , window["/NEXTHABILITIES/"].get_size())
-print("Resolucion actual: ", window.size)
+print("Resolucion: ",window.size)
+print(window["/CLIENT_CHARACTER_DESCRIPTION/"].get_size())
+print(Layouts.scales['R_CHCDesc'])
 
 while True:
     event, values = window.read()
@@ -68,6 +66,18 @@ while True:
     print(values) 
     print(event) 
     
+    if event in ccInputsKeys:
+        """
+        This verifies if the player has filled correctly all input spaces
+        """
+        for key in ccInputsKeys:
+            if values[key] not in ccDefValues and values[key] != "":
+                window["/NEXTHABILITIES/"].update(disabled=False)
+            elif values[key] in ccDefValues or values[key] == "":
+                window["/NEXTHABILITIES/"].update(disabled=True)
+                break
+            
+
     if event in (None, "/exit/", gui.WIN_CLOSED,"/BACKMAIN/"):
         break
 window.close()
