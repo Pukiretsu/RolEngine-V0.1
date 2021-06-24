@@ -112,4 +112,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Configs of VsCode
 .vscode/
+
+# Local App Config Data
+.Data/configs.json
+Data/configs.json
+*.png

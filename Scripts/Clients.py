@@ -14,7 +14,7 @@ while True:
     full_msg = b''
     new_msg = True
     while True:
-        msg = c.recv(19)
+        msg = c.recv(19) # Message buffering
         
         if new_msg:
             print(f"New msg lenght {msg[:HEADERSIZE]}") # Log line
