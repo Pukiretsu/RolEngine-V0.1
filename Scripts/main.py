@@ -2,7 +2,7 @@
 from tkinter.constants import FALSE
 import PySimpleGUI as gui
 from os import system
-import Layout 
+import Layouts
 #------------------------------Config------------------------------#
 
 # TODO: Start with the server thing...
@@ -11,7 +11,7 @@ import Layout
 
 window = gui.Window    (
                             title = "Chupame los cocos.",
-                            layout = Layout.mainLayout,
+                            layout = Layouts.mainLayout,
                             auto_size_buttons = True, 
                             resizable = True,
                             no_titlebar=False,
