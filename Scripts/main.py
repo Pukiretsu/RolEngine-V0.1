@@ -16,6 +16,7 @@ TODO : Implement the base Layouts
 from os import system #This is just for debugging 
 import PySimpleGUI as gui
 import Configs as conf
+import GFXMagnagement as gfx
 import Layouts
 #-----------------------------Variable-----------------------------#
 # Configuration file
@@ -39,6 +40,7 @@ class Player:
         self.gender:    basicInfo[4]
     
     def parse_info(self):
+        # TODO : Write the method xd
         pass
 
 
@@ -50,7 +52,7 @@ window = gui.Window    (
                             size = configs["WindowedRes"],
                             element_justification = "left",
                             finalize = True,
-                            margins = (0,10)
+                            margins = (0,5)
                         )
 #------------------------Events magnagement------------------------#
 
@@ -65,6 +67,15 @@ while True:
     #system("cls") 
     print(values) 
     print(event) 
+    
+    
+    
+    if event == "/CLIENT_AVATARUPLOAD/":
+        imgPath = values['/CLIENT_AVATARUPLOAD/']
+        newAvatar = gfx.CircleCrop(imgPath,Layouts.scales['S_CHCAvatar'])
+        newAvatar = gfx.PNG_EncodedBase64(newAvatar)
+        window["/CLIENT_AVATAR/"].update(data=newAvatar)
+        window.refresh()
     
     if event in ccInputsKeys:
         """

@@ -1,12 +1,17 @@
 #--------------------------Library Import--------------------------#
 import json
+import pickle as pck
 from PySimpleGUI import Window
 #--------------------------Functions list--------------------------#
 width, height = Window.get_screen_size()
 defaults = {
     'WindowedRes' : (round(width*0.75), round(height*0.75)),
     }
-    
+
+resourceDefaults = {
+    'Avatar_img' : None,
+}
+
 def DetectConfigs():
     """ 
     Definition:
@@ -18,11 +23,11 @@ def DetectConfigs():
     Bool value if there is or not a config file.
     """
     try:
-        data = open(".\data\Configs.json","r")
+        data = open(".\Data\Configs.json","r")
         data.close()
         return True
     except FileNotFoundError:
-        data = open(".\data\configs.json","x")
+        data = open(".\Data\configs.json","x")
         data.close()
         return False
 
@@ -34,10 +39,10 @@ def Defaults():
     """
     config = defaults
     
-    data = open(".\data\configs.json","w")
+    data = open(".\Data\configs.json","w")
     data.write(json.dumps(config))
     data.close()
-
+    
 def GetConfigs():
     """ 
     Definition:
@@ -48,7 +53,7 @@ def GetConfigs():
     -------------
     <Dict> object with the configurations.
     """
-    data = open(".\data\configs.json","r")
+    data = open(".\Data\configs.json","r")
     config = json.loads(data.read())
     # Some Bug preventing code
     data.close()
@@ -69,7 +74,17 @@ def SaveConfigs(config):
     config <Dict>
         The configuration dictionary object.
     """
-    data = open(".\data\configs.json","w")
+    data = open(".\Data\configs.json","w")
     data.write(json.dumps(config))
     data.close()
-    
+
+def loadPCKData(dir):
+    data = open(dir,"rb")
+    loads = pck.load(data)
+    data.close()
+    return loads
+
+def savePCKData(data, dir):
+    target = open(dir,"wb")
+    pck.dump(data, target)
+    target.close

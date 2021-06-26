@@ -32,13 +32,7 @@ TODO : Make the UI
 import PySimpleGUI as gui
 import Configs as conf
 from math import ceil
-#import GFXMagnagement as GFX
-#-----------------------------Resource-----------------------------#
-
-Data = open(".\TestAssets\placeholder4.png", "rb")
-PlaceHolder = Data.read()
-Data.close()
-
+import GFXMagnagement as GFX
 
 #---------------------------Variable Def---------------------------#
 
@@ -47,6 +41,8 @@ if conf.DetectConfigs():
 else:
     conf.Defaults()
     configs = conf.GetConfigs()
+
+resources= {}
 
 # Color and font Dicts
 
@@ -68,24 +64,24 @@ fonts = {
     }
 
 scales = {
-    'S_CHCAvatar' : 30, # Picture
-    'R_CHCDesc': (41,fonts['FormFnt']), #  Rows
+    'S_CHCAvatar' : 35, # Picture
+    'R_CHCDesc': (45,fonts['FormFnt']), #  Rows
+    'C_CHCDesc': ()
 }
 
 # This last one is very special, the spacings have codes and the values are listed in the pdf
 
 spacing = {
     'W_CHCMarGins' : 1.5, # Margins of the row
-    'W_CHCCenterTittle' : 44, # The central between The buttons and the tittle
+    'W_CHCCenterTittle' : 40, # The central between The buttons and the tittle
     'W_CHCAvatar': 3.5,
     'W_CHCNAME' : 9, # Name input field 
     'W_CHCAvatarUpload': 16.04,
-    'W_CHCInputSEP': 0.7,
+    'W_Controls': 81 ,
+    'W_CHCInputSEP': 1,
     'H_CHCMotd' : 1, # Over the subtitle
     'H_CHCAvatar': 2.5,
     'H_CHCInputSEP': 4.9,
-    'H': 2.5 ,
-    
 }
 
 #-----------------------------Function------------------------------#
@@ -108,14 +104,19 @@ def setFactors(dct):
         
         elif Space[0] == "S": # Square Scale
             value = dct[Space] * widthFactor
-            dct[Space] = (value,value)
+            dct[Space] = (int(value),int(value))
         
         elif Space[0] == "R": # Rows Factor
             boxSize = dct[Space][0] * heightFactor
             fntSize = dct[Space][1] * heightFactor
             
-            dct[Space] = ceil(boxSize/fntSize)
+            dct[Space] = int(ceil(boxSize/fntSize))
         
+        """ elif Space[0] == "C": # Column Factor
+            boxSize = dct[Space][0] * widthFactor
+            fntSize = dct[Space][1] * widthFactor
+            
+            dct[Space] = int(ceil(boxSize/fntSize)) """
 
 def setFontSizing(FNTs):
     HeightFactor = configs["WindowedRes"][1]/100
@@ -124,7 +125,9 @@ def setFontSizing(FNTs):
             value = 0.6697 * (FNTs[size]*HeightFactor) - 3.1135 # That comes from a linear regression of the Pt vs Px values
             FNTs[size] = FNTs["Font"] + str(round(value))
 
-
+def setResources(rsc):
+    
+    pass
 
 #------------------------------config-------------------------------#
 gui.theme(colors['Theme'])
@@ -135,6 +138,19 @@ colors['PButton'] = (("#eb475a", gui.theme_background_color())) #a21324
 setFactors(spacing)
 setFactors(scales)
 setFontSizing(fonts)
+
+#-----------------------------Resource-----------------------------#
+
+resources = conf.loadPCKData('Data\Assets\Defaults\Defaults.pck')
+
+print(type(resources))
+print(resources)
+
+Data = open("Data\Assets\Defaults\PlaceHolder.png", "rb")
+PlaceHolder = Data.read()
+Data.close()
+
+
 
 #------------------------------Layout------------------------------#
 mainLeftColumn  =   [
@@ -161,7 +177,7 @@ basicInfoClient = [[
         [
             [gui.Image(data = PlaceHolder, key="/CLIENT_AVATAR/", pad = ((spacing['W_CHCAvatar'],spacing['W_CHCAvatar']),(spacing['H_CHCAvatar'],0)) , size=scales['S_CHCAvatar'])],
 
-            [gui.FileBrowse("Subir Imagen", key="/CLIENT_AVATARUPLOAD/",    pad = ((spacing['W_CHCAvatarUpload'],0),(0,10)), font = fonts['BFnt'])],
+            [gui.FileBrowse("Subir Imagen", key="/CLIENT_AVATARUPLOAD/",    pad = ((spacing['W_CHCAvatarUpload'],0),(0,10)), font = fonts['BFnt'],file_types=(("Png", "*.png"),),enable_events=True)],
             [gui.Input("Nombre",            key="/CLIENT_CHARACTER_NAME/",  pad = ((spacing['W_CHCNAME'],0),0),      font = fonts['IFnt'], size=(20,0), enable_events=True,justification="center")]
         ],pad=(0,0),vertical_alignment="t"),
     
@@ -170,30 +186,30 @@ basicInfoClient = [[
             [   gui.Column(
                     [
                         [
-                            gui.Text("Edad:",                                       pad = ((0,spacing['W_CHCInputSEP']),(0,spacing['H_CHCInputSEP'])),  font = fonts['FormFnt']),
-                            gui.Input("Años",   key = "/CLIENT_CHARACTER_AGE/",     pad = (0,(0,spacing['H_CHCInputSEP'])),       font = fonts['FormFnt'], size=(4,0), enable_events=True,justification="center"),
+                            gui.Text("Edad:",                                       pad = ((0,5),(0,spacing['H_CHCInputSEP'])), font = fonts['FormFnt']),
+                            gui.Input("Años",   key = "/CLIENT_CHARACTER_AGE/",     pad = (0,(0,spacing['H_CHCInputSEP'])),     font = fonts['FormFnt'], size=(4,0), enable_events=True,justification="center"),
                         ],
                         [
-                            gui.Text("Estatura:",                                   pad = ((0,spacing['W_CHCInputSEP']),0),       font = fonts['FormFnt']),
+                            gui.Text("Estatura:",                                   pad = ((0,5),0),       font = fonts['FormFnt']),
                             gui.Input("Metros", key = "/CLIENT_CHARACTER_HEIGHT/",  pad = (0,0),            font = fonts['FormFnt'], size=(6,0), enable_events=True,),
                         ]
-                    ],pad=((0,30),0),vertical_alignment="t"),
+                    ],pad=((0,spacing['W_CHCInputSEP']),0),vertical_alignment="t"),
              
                 gui.Column(
                     [
                         [
-                            gui.Text("Color de piel:",                              pad = ((0,spacing['W_CHCInputSEP']),(0,spacing['H_CHCInputSEP'])),  font = fonts['FormFnt']),
+                            gui.Text("Color de piel:",                              pad = ((0,5),(0,spacing['H_CHCInputSEP'])),  font = fonts['FormFnt']),
                             gui.Combo(["Seleccione","Negro", "Blanco kkk"], key="/CLIENT_CHARACTER_RACE/",      readonly=True,    pad = (0,(0,spacing['H_CHCInputSEP'])),       default_value="Seleccione", font=fonts['IFnt'], size=(10,0), enable_events=True,),
                         ],
                         [
-                            gui.Text("Genero:",                                     pad = ((0,spacing['W_CHCInputSEP']),0),       font = fonts['FormFnt']),
+                            gui.Text("Genero:",                                     pad = ((0,5),0),       font = fonts['FormFnt']),
                             gui.Combo(["Seleccione","Hombre", "Mujer"],     key="/CLIENT_CHARACTER_GENDER/",    readonly=True,    pad = (0,0),            default_value="Seleccione", font=fonts['IFnt'], size=(10,0), enable_events=True,),
                         ]
                     ],pad=(0,0),vertical_alignment="t"),
             ],
             
             [gui.Text("Descripcion Fisica:", pad = (0,(spacing['H_CHCInputSEP'],20)), font = fonts['FormFnt'])],
-            [gui.Multiline("Descripción corta...", key="/CLIENT_CHARACTER_DESCRIPTION/", font=fonts['FormFnt'], no_scrollbar=True, size=(35,5),pad=(0,0))] # TODO : Work in a appropiate pad...
+            [gui.Multiline("Descripción corta...", key="/CLIENT_CHARACTER_DESCRIPTION/", font=fonts['FormFnt'], no_scrollbar=True, size=(35,scales["R_CHCDesc"]),pad=(0,0))]
             
         ],pad=(0,0),vertical_alignment="t")
     ],
@@ -212,7 +228,7 @@ characterCreation   =   [
     ],
     
     [
-        gui.Button("Volver",    key="/BACKMAIN/",           pad = ((1172,10),0),    font = fonts['CtrlFnt'], border_width = 0, button_color = colors['TButton'], mouseover_colors = colors["PButton"]),
+        gui.Button("Volver",    key="/BACKMAIN/",           pad = ((spacing['W_Controls'],10),0),    font = fonts['CtrlFnt'], border_width = 0, button_color = colors['TButton'], mouseover_colors = colors["PButton"]),
         gui.Button("Siguiente", key="/NEXTHABILITIES/",     pad = ((0,0),0),        font = fonts['CtrlFnt'], border_width = 0, button_color = colors['TButton'], mouseover_colors = colors["PButton"], disabled = True),
 
     ],
