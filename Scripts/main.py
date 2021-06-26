@@ -1,7 +1,20 @@
+#----------------------------TO DO list--------------------------#
+'''
+TODO : Start with the server thing... [Started...]
+[DONE] : automatically create a config file as a json 
+TODO : Create a autentication system user and password
+    TODO : First make it work locally
+    TODO : Implement it with sockets (look in server.py and client.py for further info) 
+TODO : Implement the base Layouts
+    TODO : Implement a client layout to create their character info, Please guide yourself 
+    with the template of the character sheet found on:
+    https://docs.google.com/spreadsheets/d/1aM7MPZn-rG12oEk-3mI_V1b0M8uEm7EEqvN_U0CPXzs/edit?usp=sharing
+    TODO : Implement a DM layout to interact with the character info
+'''
+
 #--------------------------Library Import--------------------------#
-from tkinter.constants import FALSE
+from os import system #This is just for debugging 
 import PySimpleGUI as gui
-<<<<<<< HEAD
 import Configs as conf
 import GFXMagnagement as gfx
 import Layouts
@@ -29,18 +42,10 @@ class Player:
     def parse_info(self):
         # TODO : Write the method xd
         pass
-=======
-from os import system
-import Layouts
-#------------------------------Config------------------------------#
->>>>>>> 2f4f049519b1be6aac6945a06b325452f0d1dd4f
 
-# TODO: Start with the server thing...
 
 #------------------------Window magnagement------------------------#
-
 window = gui.Window    (
-<<<<<<< HEAD
                             title = "Rol Engine Alpha V0.1",
                             layout = characterCreation,
                             auto_size_buttons = True,
@@ -48,24 +53,21 @@ window = gui.Window    (
                             element_justification = "left",
                             finalize = True,
                             margins = (0,5)
-=======
-                            title = "Chupame los cocos.",
-                            layout = Layouts.mainLayout,
-                            auto_size_buttons = True, 
-                            resizable = True,
-                            no_titlebar=False,
-                            grab_anywhere=True
->>>>>>> 2f4f049519b1be6aac6945a06b325452f0d1dd4f
                         )
-
 #------------------------Events magnagement------------------------#
 
-fullscreen = False
+window.refresh()
+print("Resolucion: ",window.size)
+print(window["/CLIENT_CHARACTER_DESCRIPTION/"].get_size())
+print(Layouts.scales['R_CHCDesc'])
 
 while True:
     event, values = window.read()
+
+    #system("cls") 
+    print(values) 
+    print(event) 
     
-<<<<<<< HEAD
     
     
     if event == "/CLIENT_AVATARUPLOAD/":
@@ -85,25 +87,8 @@ while True:
             elif values[key] in ccDefValues or values[key] == "":
                 window["/NEXTHABILITIES/"].update(disabled=True)
                 break
-=======
-    system("cls")
-    print(values)
-    print(event)
-    
-    if event == "/Fullscreen/":
-        if fullscreen == False:
-            window.maximize()
-            window["/Fullscreen/"].update(text="Ventana")
-            fullscreen = True
->>>>>>> 2f4f049519b1be6aac6945a06b325452f0d1dd4f
             
-        else:
-            window.normal()
-            window["/Fullscreen/"].update(text="Pantalla completa")
-            fullscreen = False
-            
-    
-    if event in (None, "/exit/", gui.WIN_CLOSED):
-        break
 
+    if event in (None, "/exit/", gui.WIN_CLOSED,"/BACKMAIN/"):
+        break
 window.close()
