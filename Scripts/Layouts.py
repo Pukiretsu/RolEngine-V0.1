@@ -16,11 +16,14 @@ TODO : Start prototyping the UI
 
 TODO : Make the UI
     [DONE] : Algorithm to auto size and pan based on window size
-    TODO : Use pillow to make a user upload their own image
+    [DONE] : Use pillow to make a user upload their own image
     TODO : For client
         TODO : Character Creation Assistant
-            TODO : Basic Info (work in progress)
-            TODO : Atribbutte info  
+            [DONE] : Basic Info (work in progress)
+            TODO : Atribbutte info
+                TODO : Pad every element  
+                TODO : Rewrite every Att icon
+                
     TODO : For master
         TODO : Character Display 
         TODO : Character panel magnagement
@@ -32,7 +35,7 @@ TODO : Make the UI
 import PySimpleGUI as gui
 import Configs as conf
 from math import ceil
-import GFXMagnagement as GFX
+import GFXMagnagement as gfx
 
 #---------------------------Variable Def---------------------------#
 
@@ -41,8 +44,6 @@ if conf.DetectConfigs():
 else:
     conf.Defaults()
     configs = conf.GetConfigs()
-
-resources= {}
 
 # Color and font Dicts
 
@@ -65,8 +66,8 @@ fonts = {
 
 scales = {
     'S_CHCAvatar' : 35, # Picture
+    'S_CHCAtributeRsc' : 20, # Picture
     'R_CHCDesc': (45,fonts['FormFnt']), #  Rows
-    'C_CHCDesc': ()
 }
 
 # This last one is very special, the spacings have codes and the values are listed in the pdf
@@ -111,12 +112,6 @@ def setFactors(dct):
             fntSize = dct[Space][1] * heightFactor
             
             dct[Space] = int(ceil(boxSize/fntSize))
-        
-        """ elif Space[0] == "C": # Column Factor
-            boxSize = dct[Space][0] * widthFactor
-            fntSize = dct[Space][1] * widthFactor
-            
-            dct[Space] = int(ceil(boxSize/fntSize)) """
 
 def setFontSizing(FNTs):
     HeightFactor = configs["WindowedRes"][1]/100
@@ -126,31 +121,32 @@ def setFontSizing(FNTs):
             FNTs[size] = FNTs["Font"] + str(round(value))
 
 def setResources(rsc):
-    
-    pass
+    for resource in rsc:
+        if resource[0] == "C":
+            cropedImg = gfx.PNGCircleCrop(None, rsc[resource], scales['S_CHCAvatar'])
+        elif resource[0] == "S":
+            cropedImg = rsc[resource]
+            pass#cropedImg = gfx.rsc[resource].resize(scales['S_CHCAtributeRsc'])
+        
+        encodedimg = gfx.PNG_EncodedBase64(cropedImg)
+        rsc[resource] = encodedimg
 
 #------------------------------config-------------------------------#
 gui.theme(colors['Theme'])
+
 colors['InactiveTab'] = ((gui.theme_element_text_color(), gui.theme_background_color()))
 colors['ActiveTab'] = ((gui.theme_button_color()))
 colors['TButton'] = ((gui.theme_element_text_color(), gui.theme_background_color()))
 colors['PButton'] = (("#eb475a", gui.theme_background_color())) #a21324
+
 setFactors(spacing)
 setFactors(scales)
 setFontSizing(fonts)
 
 #-----------------------------Resource-----------------------------#
 
-resources = conf.loadPCKData('Data\Assets\Defaults\Defaults.pck')
-
-print(type(resources))
-print(resources)
-
-Data = open("Data\Assets\Defaults\PlaceHolder.png", "rb")
-PlaceHolder = Data.read()
-Data.close()
-
-
+resources = conf.loadPCKData('Data\Resources.pck')
+setResources(resources)
 
 #------------------------------Layout------------------------------#
 mainLeftColumn  =   [
@@ -158,11 +154,7 @@ mainLeftColumn  =   [
                 ]
 
 mainRightColumn =   [
-    [
-        gui.Text("",key='/textoPrueba/',),
-        gui.Button(key="/Fullscreen/", button_text="Pantalla completa")
-    ],
-    [gui.Button(key="/exit/",button_text="Salir")]
+    []
                     ] 
 
 mainLayout  =   [   
@@ -172,10 +164,10 @@ mainLayout  =   [
     ]
                 ]
 
-basicInfoClient = [[
+playerInfo = [[
     gui.Column(
         [
-            [gui.Image(data = PlaceHolder, key="/CLIENT_AVATAR/", pad = ((spacing['W_CHCAvatar'],spacing['W_CHCAvatar']),(spacing['H_CHCAvatar'],0)) , size=scales['S_CHCAvatar'])],
+            [gui.Image(data = resources['CF_AVATAR'], key="/CLIENT_AVATAR/", pad = ((spacing['W_CHCAvatar'],spacing['W_CHCAvatar']),(spacing['H_CHCAvatar'],0)) , size=scales['S_CHCAvatar'])],
 
             [gui.FileBrowse("Subir Imagen", key="/CLIENT_AVATARUPLOAD/",    pad = ((spacing['W_CHCAvatarUpload'],0),(0,10)), font = fonts['BFnt'],file_types=(("Png", "*.png"),),enable_events=True)],
             [gui.Input("Nombre",            key="/CLIENT_CHARACTER_NAME/",  pad = ((spacing['W_CHCNAME'],0),0),      font = fonts['IFnt'], size=(20,0), enable_events=True,justification="center")]
@@ -211,9 +203,41 @@ basicInfoClient = [[
             [gui.Text("Descripcion Fisica:", pad = (0,(spacing['H_CHCInputSEP'],20)), font = fonts['FormFnt'])],
             [gui.Multiline("Descripción corta...", key="/CLIENT_CHARACTER_DESCRIPTION/", font=fonts['FormFnt'], no_scrollbar=True, size=(35,scales["R_CHCDesc"]),pad=(0,0))]
             
-        ],pad=(0,0),vertical_alignment="t")
+        ],pad = (0,0),vertical_alignment="t")
     ],
 ]
+
+playerAttributeInfo = [[
+    gui.Column(
+        [
+            [gui.Image(data=resources['SF_PHOLD_ATTRIBUTE'],pad=(0,0))],
+            [gui.Image(data=resources['SF_PHOLD_ATTRIBUTE'],pad=(0,0))],
+            [gui.Image(data=resources['SF_PHOLD_ATTRIBUTE'],pad=(0,0))],
+            [gui.Image(data=resources['SF_PHOLD_ATTRIBUTE'],pad=(0,0))],
+            [gui.Image(data=resources['SF_PHOLD_ATTRIBUTE'],pad=(0,0))],
+            [gui.Image(data=resources['SF_PHOLD_ATTRIBUTE'],pad=(0,0))],
+            [gui.Image(data=resources['SF_PHOLD_ATTRIBUTE'],pad=(0,0))],
+        ],pad = (0,0),vertical_alignment="t"),
+    gui.Column([
+            [
+                gui.Button("00",k="/RND_0/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+                gui.Button("00",k="/RND_1/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+                gui.Button("00",k="/RND_2/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+                gui.Button("00",k="/RND_3/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+                gui.Button("00",k="/RND_4/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+            ],
+            [
+                gui.Button("00",k="/RND_5/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+                gui.Button("00",k="/RND_6/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+                gui.Button("00",k="/RND_7/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+                gui.Button("00",k="/RND_8/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+                gui.Button("00",k="/RND_9/", size = ((4,1)), pad = (0,0),font="Bahnscrift 30", enable_events=False),
+            ],
+            [gui.Button("Roll",k="/ROLL/")]
+        ],pad = (0,0),vertical_alignment="t")
+    ]
+]
+
 
 characterCreation   =   [
     [
@@ -224,7 +248,8 @@ characterCreation   =   [
     [   gui.Text("¿Quién será nuestro heroe?:", pad=((spacing['W_CHCMarGins'],0),(spacing['H_CHCMotd'],0)), font=fonts['STFnt'])],
     
     [
-        gui.Column(basicInfoClient, key="/BASICINFO_LAYOUT/", pad=(0,0))
+        gui.Column(playerInfo,          key="/PLAYERINFO_LAYOUT/",      pad = (0,0), visible = True),
+        gui.Column(playerAttributeInfo, key="/PLAYERATTINFO_LAYOUT/",   pad = (0,0), visible = False)
     ],
     
     [

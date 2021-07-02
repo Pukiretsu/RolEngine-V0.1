@@ -15,6 +15,7 @@ TODO : Implement the base Layouts
 #--------------------------Library Import--------------------------#
 from os import system #This is just for debugging 
 import PySimpleGUI as gui
+from PySimpleGUI.PySimpleGUI import T
 import Configs as conf
 import GFXMagnagement as gfx
 import Layouts
@@ -61,21 +62,40 @@ print("Resolucion: ",window.size)
 print(window["/CLIENT_CHARACTER_DESCRIPTION/"].get_size())
 print(Layouts.scales['R_CHCDesc'])
 
+LayoutPos = "CHC_PLAYERINFO"
+
+def debug(evn, val):
+    print(val) 
+    print(evn) 
+    
+
 while True:
     event, values = window.read()
+    debug(event,values)
 
-    #system("cls") 
-    print(values) 
-    print(event) 
-    
-    
-    
+    if event == "/CLIENT_ATTRIBUTEINFO/":
+        window["/CLIENT_BASICINFO/"].update(button_color = Layouts.colors['InactiveTab'])
+        window["/CLIENT_ATTRIBUTEINFO/"].update(button_color = Layouts.colors['ActiveTab'])
+        
+        window["/PLAYERINFO_LAYOUT/"].update(visible=False)
+        window["/PLAYERATTINFO_LAYOUT/"].update(visible=True)
+        window.finalize()
+        
+            
+    if event == "/CLIENT_BASICINFO/":
+        window["/CLIENT_ATTRIBUTEINFO/"].update(button_color = Layouts.colors['InactiveTab'])
+        window["/CLIENT_BASICINFO/"].update(button_color = Layouts.colors['ActiveTab'])
+
+        window["/PLAYERATTINFO_LAYOUT/"].update(visible=False)
+        window["/PLAYERINFO_LAYOUT/"].update(visible=True)
+        window.finalize()
+
     if event == "/CLIENT_AVATARUPLOAD/":
         imgPath = values['/CLIENT_AVATARUPLOAD/']
-        newAvatar = gfx.CircleCrop(imgPath,Layouts.scales['S_CHCAvatar'])
-        newAvatar = gfx.PNG_EncodedBase64(newAvatar)
-        window["/CLIENT_AVATAR/"].update(data=newAvatar)
-        window.refresh()
+        avatarCrop = gfx.PNGCircleCrop(imgPath,None,Layouts.scales['S_CHCAvatar'])
+        avatarBytes = gfx.PNG_EncodedBase64(avatarCrop)
+        window["/CLIENT_AVATAR/"].update(data=avatarBytes)
+        window.finalize()
     
     if event in ccInputsKeys:
         """

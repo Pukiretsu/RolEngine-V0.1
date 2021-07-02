@@ -30,6 +30,8 @@ def PNGCircleCrop(dir, imgobj, size):
     -----------
     dir <str>:
         A string with the path of the png file.
+    imgobj <PIL.Image Object>:
+        A prexisting PIL image object.
     size <tuple> (width, height):
         A tuple with the size in px of the output image.
     
@@ -101,3 +103,11 @@ def storeImg(dir, diction, key):
     diction[key] = data
 
 
+#Rsc = {cfg.loadPCKData("Data\Resources.pck")}
+""" Rsc = {}
+
+storeImg("Data\Assets\PlaceHolder.png",Rsc,'CF_AVATAR')
+storeImg("TestAssets\ATTPLACEHOLDER.png",Rsc,'SF_PHOLD_ATTRIBUTE')
+cfg.savePCKData(Rsc,"Data\Resources.pck")
+
+print(Rsc) """
